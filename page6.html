@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Amazon Deals</title>
+    <style>
+       * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #94d9dd 0%, #a8e3e6 50%, #c2edf0 100%);
+    color: #2d3748;
+    line-height: 1.6;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Create multiple bubbles with different sizes and positions */
+body::before, body::after,
+body div[class^="bubble-"] {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    z-index: -1;
+    animation: float 15s infinite ease-in-out;
+}
+
+/* Big bubble top right */
+body::before {
+    top: -5%;
+    right: -5%;
+    width: 200px;
+    height: 200px;
+    animation-delay: 0s;
+}
+
+/* Medium bubble bottom left */
+body::after {
+    bottom: -5%;
+    left: -5%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 3s;
+}
+
+/* Additional bubbles */
+.bubble-1 {
+    top: 20%;
+    left: 10%;
+    width: 120px;
+    height: 120px;
+    animation-delay: 5s;
+}
+
+.bubble-2 {
+    top: 60%;
+    right: 15%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 7s;
+}
+
+.bubble-3 {
+    bottom: 30%;
+    left: 20%;
+    width: 100px;
+    height: 100px;
+    animation-delay: 2s;
+}
+
+.bubble-4 {
+    top: 15%;
+    right: 25%;
+    width: 60px;
+    height: 60px;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+}
+
+/* Header Styles */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 25px 0;
+    background: linear-gradient(135deg, #fa8a79 0%, #fad6a5 50%, #f8e5d6 100%);
+    color: #333;
+    border-radius: 12px;
+    display: flex;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative shapes */
+header::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+}
+
+header::after {
+    content: "";
+    position: absolute;
+    bottom: -30px;
+    left: -30px;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+}
+
+.logo-container {
+    margin-bottom: 15px;
+}
+
+.logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #fa8a79;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* Search Filter */
+.search-container {
+    margin: 20px auto;
+    max-width: 600px;
+    width: 100%;
+}
+
+.search-filter {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.search-filter:focus {
+    outline: none;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Product Grid */
+.products-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.product {
+    background: #fbf5e5;
+    border-radius: 25px;
+    padding: 6px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+}
+
+.product:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.product-image-container {
+    flex: 0 0 180px; /* Fixed height for image container */
+    width: 100%;
+    overflow: hidden;
+    border-radius: 15px;
+    background: white;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.product:hover .product-image {
+    transform: scale(1.05);
+}
+
+.product-info {
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-title {
+	text-align: center;
+    font-size: 1rem;
+    margin-bottom: 0px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Show max 3 lines */
+    -webkit-box-orient: vertical;
+    color: #2d3748;
+    font-weight: 500;
+    min-height: 60px; /* Ensure consistent height */
+    word-break: break-word; /* Prevent long words from breaking layout */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .products-container {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .product-image-container {
+        flex: 0 0 150px;
+    }
+    
+    .logo {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .products-container {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    
+    .product-image-container {
+        flex: 0 0 220px;
+    }
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #6B7280;
+    border-radius: 12px;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+                <img src="C:/Users/khali/Downloads/Logofinal.png" class="logo" alt="Gadget Gems Prime Logo">
+        </div>
+        <h1>Gadget Gems Prime</h1>
+        <p>💎Top-rated products! across toys,<br> gadgets, and lifestyle essentials.</p>
+    </header>
+    
+    <!-- Search Filter -->
+    <div class="search-container">
+        <input type="text" class="search-filter" placeholder="Search products by Product Number..." id="searchInput">
+    </div>
+    
+    <div id="products-container" class="products-container">
+        <!-- Products will be loaded here by JavaScript -->
+    </div>
+    
+    <footer>
+        <p>Note: When you buy through our links, we may earn commissions from Amazon and other trusted partners.<br>@GadgetGemsPrime</p>
+    </footer>
+
+    <script>
+        // Product Data - Add your products here daily
+        const products = [
+			{
+                name: "9. Dishwashing Gloves",
+                image: "D:/products/9.jpg",
+                links: {
+					AU: "https://amzn.to/3FMeeCi",
+					BE: "https://amzn.to/3FMeeCi",
+					CA: "https://amzn.to/3FMeeCi",
+					EG: "https://amzn.to/3FMeeCi",
+					FR: "https://amzn.to/3FMeeCi",
+					DE: "https://amzn.to/3FMeeCi",
+					IN: "https://amzn.to/42b89H1",
+					IE: "https://amzn.to/3FMeeCi",
+					IT: "https://amzn.to/3FMeeCi",
+					JP: "https://amzn.to/3FMeeCi",
+					NL: "https://amzn.to/3FMeeCi",
+					PL: "https://amzn.to/3FMeeCi",
+					SG: "https://amzn.to/3FMeeCi",
+					SA: "https://amzn.to/3FMeeCi",
+					ES: "https://amzn.to/3FMeeCi",
+					SE: "https://amzn.to/3FMeeCi",
+					TR: "https://amzn.to/3FMeeCi",
+					GB: "https://amzn.to/3FMeeCi",
+					US: "https://amzn.to/3FMeeCi"
+                }
+            },
+			{
+                name: "8. Garlic Chopper",
+                image: "D:/products/8.jpg",
+                links: {
+					AU: "https://amzn.to/3YbcatI",
+					BE: "https://amzn.to/3YbcatI",
+					CA: "https://amzn.to/3YbcatI",
+					EG: "https://amzn.to/3YbcatI",
+					FR: "https://amzn.to/3YbcatI",
+					DE: "https://amzn.to/3YbcatI",
+					IN: "https://amzn.to/4iNzgiD",
+					IE: "https://amzn.to/3YbcatI",
+					IT: "https://amzn.to/3YbcatI",
+					JP: "https://amzn.to/3YbcatI",
+					NL: "https://amzn.to/3YbcatI",
+					PL: "https://amzn.to/3YbcatI",
+					SG: "https://amzn.to/3YbcatI",
+					SA: "https://amzn.to/3YbcatI",
+					ES: "https://amzn.to/3YbcatI",
+					SE: "https://amzn.to/3YbcatI",
+					TR: "https://amzn.to/3YbcatI",
+					GB: "https://amzn.to/3YbcatI",
+					US: "https://amzn.to/3YbcatI"
+                }
+            },
+			{
+                name: "7. Waist Body Tape",
+                image: "D:/products/7.jpg",
+                links: {
+					AU: "https://amzn.to/41QnA8z",
+					BE: "https://amzn.to/41QnA8z",
+					CA: "https://amzn.to/41QnA8z",
+					EG: "https://amzn.to/41QnA8z",
+					FR: "https://amzn.to/41QnA8z",
+					DE: "https://amzn.to/41QnA8z",
+					IN: "https://amzn.to/4cdFPZ5",
+					IE: "https://amzn.to/41QnA8z",
+					IT: "https://amzn.to/41QnA8z",
+					JP: "https://amzn.to/41QnA8z",
+					NL: "https://amzn.to/41QnA8z",
+					PL: "https://amzn.to/41QnA8z",
+					SG: "https://amzn.to/41QnA8z",
+					SA: "https://amzn.to/41QnA8z",
+					ES: "https://amzn.to/41QnA8z",
+					SE: "https://amzn.to/41QnA8z",
+					TR: "https://amzn.to/41QnA8z",
+					GB: "https://amzn.to/41QnA8z",
+					US: "https://amzn.to/41QnA8z"
+                }
+            },
+			{
+                name: "6. Paper Soap Strip",
+                image: "D:/products/6.jpg",
+                links: {
+                    US: "https://amzn.to/3FKV1kd",
+                    UK: "https://www.amazon.co.uk/dp/B0CJ7WZQ4N?tag=YOUR_UK_TAG",
+                    CA: "https://www.amazon.ca/dp/B0CJ7WZQ4N?tag=YOUR_CA_TAG",
+                    DE: "https://www.amazon.de/dp/B0CJ7WZQ4N?tag=YOUR_DE_TAG",
+                    IN: "https://amzn.to/3XCNqKQ",
+					AU: "https://amzn.to/3FKV1kd",
+					BE: "https://amzn.to/3FKV1kd",
+					CA: "https://amzn.to/3FKV1kd",
+					EG: "https://amzn.to/3FKV1kd",
+					FR: "https://amzn.to/3FKV1kd",
+					DE: "https://amzn.to/3FKV1kd",
+					IN: "https://amzn.to/3XCNqKQ",
+					IE: "https://amzn.to/3FKV1kd",
+					IT: "https://amzn.to/3FKV1kd",
+					JP: "https://amzn.to/3FKV1kd",
+					NL: "https://amzn.to/3FKV1kd",
+					PL: "https://amzn.to/3FKV1kd",
+					SG: "https://amzn.to/3FKV1kd",
+					SA: "https://amzn.to/3FKV1kd",
+					ES: "https://amzn.to/3FKV1kd",
+					SE: "https://amzn.to/3FKV1kd",
+					TR: "https://amzn.to/3FKV1kd",
+					GB: "https://amzn.to/3FKV1kd",
+					US: "https://amzn.to/3FKV1kd"
+                }
+            },
+			{
+                name: "5. Water Pump",
+                image: "D:/products/5.jpg",
+                links: {
+					AU: "https://amzn.to/3FKE3CF",
+					BE: "https://amzn.to/3FKE3CF",
+					CA: "https://amzn.to/3FKE3CF",
+					EG: "https://amzn.to/3FKE3CF",
+					FR: "https://amzn.to/3FKE3CF",
+					DE: "https://amzn.to/3FKE3CF",
+					IN: "https://amzn.to/41SjdtR",
+					IE: "https://amzn.to/3FKE3CF",
+					IT: "https://amzn.to/3FKE3CF",
+					JP: "https://amzn.to/3FKE3CF",
+					NL: "https://amzn.to/3FKE3CF",
+					PL: "https://amzn.to/3FKE3CF",
+					SG: "https://amzn.to/3FKE3CF",
+					SA: "https://amzn.to/3FKE3CF",
+					ES: "https://amzn.to/3FKE3CF",
+					SE: "https://amzn.to/3FKE3CF",
+					TR: "https://amzn.to/3FKE3CF",
+					GB: "https://amzn.to/3FKE3CF",
+					US: "https://amzn.to/3FKE3CF"
+                }
+            },
+			{
+                name: "4. Desk Lamp",
+                image: "C:/Users/khali/Downloads/4.jpg",
+                links: {
+					AU: "https://amzn.to/3FKhjma",
+					BE: "https://amzn.to/3FKhjma",
+					CA: "https://amzn.to/3FKhjma",
+					EG: "https://amzn.to/3FKhjma",
+					FR: "https://amzn.to/3FKhjma",
+					DE: "https://amzn.to/3FKhjma",
+					IN: "https://amzn.to/4hTniCG",
+					IE: "https://amzn.to/3FKhjma",
+					IT: "https://amzn.to/3FKhjma",
+					JP: "https://amzn.to/3FKhjma",
+					NL: "https://amzn.to/3FKhjma",
+					PL: "https://amzn.to/3FKhjma",
+					SG: "https://amzn.to/3FKhjma",
+					SA: "https://amzn.to/3FKhjma",
+					ES: "https://amzn.to/3FKhjma",
+					SE: "https://amzn.to/3FKhjma",
+					TR: "https://amzn.to/3FKhjma",
+					GB: "https://amzn.to/3FKhjma",
+					US: "https://amzn.to/3FKhjma"
+                }
+            },
+            {
+                name: "3. Chopper",
+                image: "C:/Users/khali/Downloads/3.jpg",
+                links: {
+					AU: "https://amzn.to/4c7sm4W",
+					BE: "https://amzn.to/4c7sm4W",
+					CA: "https://amzn.to/4c7sm4W",
+					EG: "https://amzn.to/4c7sm4W",
+					FR: "https://amzn.to/4c7sm4W",
+					DE: "https://amzn.to/4c7sm4W",
+					IN: "https://amzn.to/41PvMWD",
+					IE: "https://amzn.to/4c7sm4W",
+					IT: "https://amzn.to/4c7sm4W",
+					JP: "https://amzn.to/4c7sm4W",
+					NL: "https://amzn.to/4c7sm4W",
+					PL: "https://amzn.to/4c7sm4W",
+					SG: "https://amzn.to/4c7sm4W",
+					SA: "https://amzn.to/4c7sm4W",
+					ES: "https://amzn.to/4c7sm4W",
+					SE: "https://amzn.to/4c7sm4W",
+					TR: "https://amzn.to/4c7sm4W",
+					GB: "https://amzn.to/4c7sm4W",
+					US: "https://amzn.to/4c7sm4W"
+                }
+            },
+            {
+                name: "2. Portable Bluetooth Speakers",
+                image: "C:/Users/khali/Downloads/2.jpg",
+                links: {
+					AU: "https://amzn.to/42nP4m7",
+					BE: "https://amzn.to/42nP4m7",
+					CA: "https://amzn.to/42nP4m7",
+					EG: "https://amzn.to/42nP4m7",
+					FR: "https://amzn.to/42nP4m7",
+					DE: "https://amzn.to/42nP4m7",
+					IN: "https://amzn.to/4jud8tB",
+					IE: "https://amzn.to/42nP4m7",
+					IT: "https://amzn.to/42nP4m7",
+					JP: "https://amzn.to/42nP4m7",
+					NL: "https://amzn.to/42nP4m7",
+					PL: "https://amzn.to/42nP4m7",
+					SG: "https://amzn.to/42nP4m7",
+					SA: "https://amzn.to/42nP4m7",
+					ES: "https://amzn.to/42nP4m7",
+					SE: "https://amzn.to/42nP4m7",
+					TR: "https://amzn.to/42nP4m7",
+					GB: "https://amzn.to/42nP4m7",
+					US: "https://amzn.to/42nP4m7"
+                }
+            },
+            {
+                name: "1. Bluetooth Speaker, Wireless Charger, Table Lamp",
+                image: "C:/Users/khali/Downloads/1.jpg",
+                links: {
+					AU: "https://amzn.to/4j7QUNx",
+					BE: "https://amzn.to/4j7QUNx",
+					CA: "https://amzn.to/4j7QUNx",
+					EG: "https://amzn.to/4j7QUNx",
+					FR: "https://amzn.to/4j7QUNx",
+					DE: "https://amzn.to/4j7QUNx",
+					IN: "https://amzn.to/3FOHHvl",
+					IE: "https://amzn.to/4j7QUNx",
+					IT: "https://amzn.to/4j7QUNx",
+					JP: "https://amzn.to/4j7QUNx",
+					NL: "https://amzn.to/4j7QUNx",
+					PL: "https://amzn.to/4j7QUNx",
+					SG: "https://amzn.to/4j7QUNx",
+					SA: "https://amzn.to/4j7QUNx",
+					ES: "https://amzn.to/4j7QUNx",
+					SE: "https://amzn.to/4j7QUNx",
+					TR: "https://amzn.to/4j7QUNx",
+					GB: "https://amzn.to/4j7QUNx",
+					US: "https://amzn.to/4j7QUNx"
+                }
+            },
+            // Add new products here daily following the same format
+        ];
+
+        // Supported countries
+        const supportedCountries = ['AU','BE','CA','EG','FR','DE','IN','IE','IT','JP','NL','PL','SG','SA','ES','SE','TR','GB','US'];
+        let currentCountry = 'US';
+        
+        async function detectCountry() {
+            try {
+                // Method 1: Try free client-side geolocation API
+				//const response = await fetch('https://get.geojs.io/v1/ip/country.json');
+				const data = await response.json();
+				let countryCode = data.country || 'US';
+                
+                // Method 2: Fallback to browser language
+                if (!countryCode) {
+                    const lang = navigator.language || navigator.userLanguage;
+                    countryCode = lang.split('-')[1] || 'US';
+                }
+                        
+                // Return country code if supported, otherwise default to India
+                return supportedCountries.includes(countryCode) ? countryCode : 'US';
+            } catch (error) {
+                console.error("Country detection failed:", error);
+                return 'US'; // Fallback to India if all methods fail
+            }
+        }
+        
+        // Filter products based on search input
+        function filterProducts(searchTerm) {
+            return products.filter(product => 
+                product.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+            );
+        }
+        
+        // Display Products
+        function displayProducts(productsToShow = products) {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            if (productsToShow.length === 0) {
+                container.innerHTML = '<p style="grid-column:1/-1; text-align:center;">No products found matching your search</p>';
+                return;
+            }
+            
+            productsToShow.forEach(product => {
+                // Get the appropriate link for the current country
+                const link = product.links[currentCountry] || product.links['US'];
+                
+                const productElement = document.createElement('a');
+                productElement.className = 'product';
+                productElement.href = link;
+                productElement.target = '_blank';
+                productElement.innerHTML = `
+                    <div class="product-image-container">
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.name}</h3>
+                    </div>
+                `;
+                
+                container.appendChild(productElement);
+            });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            currentCountry = await detectCountry();
+            displayProducts();
+            
+            // Add search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                const filteredProducts = filterProducts(e.target.value);
+                displayProducts(filteredProducts);
+            });
+        });
+    </script>
+    <div class="bubble-1"></div>
+    <div class="bubble-2"></div>
+    <div class="bubble-3"></div>
+    <div class="bubble-4"></div>
+</body>
+</html>
